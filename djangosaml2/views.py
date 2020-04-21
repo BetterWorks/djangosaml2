@@ -40,6 +40,7 @@ from saml2.metadata import entity_descriptor
 from saml2.ident import code, decode
 from saml2.sigver import MissingKey
 from saml2.s_utils import UnsupportedBinding
+from saml2.request import AuthnRequest
 from saml2.response import (
     StatusError, StatusAuthnFailed, SignatureError, StatusRequestDenied,
     UnsolicitedResponse,
@@ -203,6 +204,9 @@ def login(request,
                 binding=binding)
             try:
                 if PY3:
+                    if isinstance(request_xml, AuthnRequest):
+                        request_xml = str(request_xml)
+
                     saml_request = base64.b64encode(binary_type(request_xml, 'UTF-8'))
                 else:
                     saml_request = base64.b64encode(binary_type(request_xml))
